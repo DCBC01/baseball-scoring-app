@@ -6,11 +6,16 @@ import { useEffect } from "react";
 import { Platform } from "react-native";
 import { ErrorBoundary } from "./error-boundary";
 import { useAuthStore } from "@/store/auth-store";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { trpc, trpcClient } from "@/lib/trpc";
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
   initialRouteName: "(tabs)",
 };
+
+// Create a client for React Query
+const queryClient = new QueryClient();
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -57,74 +62,78 @@ export default function RootLayout() {
   }
 
   return (
-    <ErrorBoundary>
-      <Stack>
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen 
-          name="game/[id]" 
-          options={{ 
-            title: "Game Details",
-            headerBackTitle: "Games",
-          }} 
-        />
-        <Stack.Screen 
-          name="game/new" 
-          options={{ 
-            title: "New Game",
-            headerBackTitle: "Games",
-          }} 
-        />
-        <Stack.Screen 
-          name="game/edit/[id]" 
-          options={{ 
-            title: "Edit Game",
-            headerBackTitle: "Details",
-          }} 
-        />
-        <Stack.Screen 
-          name="player/[id]" 
-          options={{ 
-            title: "Player Details",
-            headerBackTitle: "Players",
-          }} 
-        />
-        <Stack.Screen 
-          name="player/new" 
-          options={{ 
-            title: "New Player",
-            headerBackTitle: "Players",
-          }} 
-        />
-        <Stack.Screen 
-          name="player/edit/[id]" 
-          options={{ 
-            title: "Edit Player",
-            headerBackTitle: "Details",
-          }} 
-        />
-        <Stack.Screen 
-          name="team/[id]" 
-          options={{ 
-            title: "Team Details",
-            headerBackTitle: "Teams",
-          }} 
-        />
-        <Stack.Screen 
-          name="team/edit/[id]" 
-          options={{ 
-            title: "Edit Team",
-            headerBackTitle: "Details",
-          }} 
-        />
-        <Stack.Screen 
-          name="admin/users" 
-          options={{ 
-            title: "User Management",
-            headerBackTitle: "Admin",
-          }} 
-        />
-      </Stack>
-    </ErrorBoundary>
+    <trpc.Provider client={trpcClient} queryClient={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        <ErrorBoundary>
+          <Stack>
+            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen 
+              name="game/[id]" 
+              options={{ 
+                title: "Game Details",
+                headerBackTitle: "Games",
+              }} 
+            />
+            <Stack.Screen 
+              name="game/new" 
+              options={{ 
+                title: "New Game",
+                headerBackTitle: "Games",
+              }} 
+            />
+            <Stack.Screen 
+              name="game/edit/[id]" 
+              options={{ 
+                title: "Edit Game",
+                headerBackTitle: "Details",
+              }} 
+            />
+            <Stack.Screen 
+              name="player/[id]" 
+              options={{ 
+                title: "Player Details",
+                headerBackTitle: "Players",
+              }} 
+            />
+            <Stack.Screen 
+              name="player/new" 
+              options={{ 
+                title: "New Player",
+                headerBackTitle: "Players",
+              }} 
+            />
+            <Stack.Screen 
+              name="player/edit/[id]" 
+              options={{ 
+                title: "Edit Player",
+                headerBackTitle: "Details",
+              }} 
+            />
+            <Stack.Screen 
+              name="team/[id]" 
+              options={{ 
+                title: "Team Details",
+                headerBackTitle: "Teams",
+              }} 
+            />
+            <Stack.Screen 
+              name="team/edit/[id]" 
+              options={{ 
+                title: "Edit Team",
+                headerBackTitle: "Details",
+              }} 
+            />
+            <Stack.Screen 
+              name="admin/users" 
+              options={{ 
+                title: "User Management",
+                headerBackTitle: "Admin",
+              }} 
+            />
+          </Stack>
+        </ErrorBoundary>
+      </QueryClientProvider>
+    </trpc.Provider>
   );
 }

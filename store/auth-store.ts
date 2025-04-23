@@ -253,12 +253,22 @@ export const useAuthStore = create<AuthStore>()(
       },
       
       updateAppSettings: (settings) => {
-        set(state => ({
-          appSettings: {
-            ...state.appSettings,
+        set(state => {
+          // Ensure we're not passing undefined for logoUri
+          const updatedSettings: AppSettings = {
+            logoUri: state.appSettings?.logoUri ?? null,
             ...settings
+          };
+          
+          // If logoUri is undefined in the new settings, use null instead
+          if (settings.logoUri === undefined) {
+            updatedSettings.logoUri = state.appSettings?.logoUri ?? null;
           }
-        }));
+          
+          return { 
+            appSettings: updatedSettings 
+          };
+        });
       }
     }),
     {
